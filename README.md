@@ -12,3 +12,5 @@ on **Avazu**
 | NFM | 78.98 | 0.3798 |
 | DeepFM | 78.22 | 0.3782 |
 | **IFM** | **78.52** | **0.3770** |
+
+ We follow the **Avazu** processing details of [PNN](https://github.com/Atomu2014/Ads-RecSys-Datasets)
