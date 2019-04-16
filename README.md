@@ -15,7 +15,7 @@ recommendation, which contains 668,953 tag applications of
 
 
 ## Experimental results for the classification task
-In the orignal paper, we evaluate various prediction models on two public datasets, which are regression tasks. 
+In the original paper, we evaluate various prediction models on two public datasets, which are regression tasks. 
 To make the argumentation more persuasive, we compare IFM with competitive methods on the classification-task dataset **Avazu**. The evaluation metrics are *AUC* and *log loss* suited for the classification task. The results are summarized in Table 1.
 
 
@@ -34,4 +34,4 @@ The **Avazu** raw dataset can be downloaded from https://www.kaggle.com/c/avazu-
 We follow the **Avazu** processing details of [PNN](https://github.com/Atomu2014/Ads-RecSys-Datasets).
 
 From Table 1 we can see that the proposed IFM model outperforms the other state-of-the-art methods on the classification task.
-The results confirm the effectiveness of IFM again and further justifies the importance of input-aware feature representation.
+The results confirm the effectiveness of IFM again and further justify the importance of input-aware feature representation.
