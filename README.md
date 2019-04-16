@@ -1,4 +1,4 @@
-# Input-aware-Factorization-Machine (IFM)
+# Input-aware Factorization Machine (IFM)
 This repository provides an implementation and datasets of IFM which is a novel factorization machine model.
 In addition, some additional experiments not included in the paper are also presented here, including AUC performance test on Avazu dataset, , ...
 
