@@ -5,7 +5,7 @@ In addition, some additional experiments not included in the paper are also pres
 ## Code introduction
 The code is a Python implementation of IFM. 
 
-## Datasets description
+## Data description
 
 The **Frappe** dataset has been used for context-aware mobile app recommendation, which contains 96,202 records containing 957 users and
 
@@ -14,8 +14,8 @@ recommendation, which contains 668,953 tag applications of
 17,045 users on 23,743 items with 49,657 distinct tags. 
 
 
-## Experimental results for classification tasks
-Table: Performance comparison of IFM and other predictive models 
+## Experimental results for the classification task
+Table 1: Performance comparison of IFM and other predictive models 
 on **Avazu**
 
 | Model | AUC(%) | Log Loss |
@@ -28,3 +28,7 @@ on **Avazu**
 
 The **Avazu** raw dataset can be downloaded from https://www.kaggle.com/c/avazu-ctr-prediction/data.
 We follow the **Avazu** processing details of [PNN](https://github.com/Atomu2014/Ads-RecSys-Datasets).
+
+From Table 1 we can see that the proposed IFM model outperforms the other state-of-the-art methods on the classification task
+
+The results confirm the effectiveness of IFM again and further justifies the importance of input-aware feature representation.
