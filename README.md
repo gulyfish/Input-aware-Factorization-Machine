@@ -16,7 +16,7 @@ recommendation, which contains 668,953 tag applications of
 
 ## Experimental results for the classification task
 In the orignal paper, we evaluate various prediction models on two public datasets, which are regression tasks. 
-To make the argumentation more persuasive, we compare IFM with competitive methods on the classification-task dataset **Avazu**. The evaluation metrics are *AUC* and *log loss* suited the classification task. The results are summarized in Table 1.
+To make the argumentation more persuasive, we compare IFM with competitive methods on the classification-task dataset **Avazu**. The evaluation metrics are *AUC* and *log loss* suited for the classification task. The results are summarized in Table 1.
 
 
 Table 1: Performance comparison of IFM and other predictive models 
