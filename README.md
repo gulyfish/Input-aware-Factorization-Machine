@@ -28,6 +28,7 @@ on **Avazu**
 | AFM | 77.82 | 0.3821 |
 | NFM | 77.98 | 0.3798 |
 | DeepFM | 78.22 | 0.3782 |
+| xDeepFM | 78.53 | 0.3769 |
 | **IFM** | **78.52** | **0.3770** |
 
 The **Avazu** raw dataset can be downloaded from https://www.kaggle.com/c/avazu-ctr-prediction/data.
