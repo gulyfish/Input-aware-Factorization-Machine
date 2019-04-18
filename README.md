@@ -44,8 +44,8 @@ Table 2: Relative improvements (RI) value of improved components on Frappe and M
  <tr class="tableizer-firstrow"><th rowspan="2">Model</th><th colspan="2">Frappe</th><th  colspan="2">movielens</th></tr>
  <tr><td>MAE</td><td>RMSE</td><td>MAE</td><td>RMSE</td></tr>
  <tr><td>FM</td><td>0.1611</td><td>0.3352</td><td>0.2604</td><td>0.4706</td></tr>
- <tr><td>DeepFM</td><td>0.095</td><td>0.3197</td><td>0.1956</td><td>0.4552</td></tr>
+ <tr><td>DeepFM</td><td>0.0952</td><td>0.3197</td><td>0.1956</td><td>0.4552</td></tr>
  <tr><td>NFM</td><td>0.0972</td><td>0.3139</td><td>0.2195</td><td>0.4478</td></tr>
- <tr><td>AFM</td><td>0.134</td><td>0.3147</td><td>0.2286</td><td>0.4426</td></tr>
+ <tr><td>AFM</td><td>0.1341</td><td>0.3147</td><td>0.2286</td><td>0.4426</td></tr>
  <tr><td>IFM</td><td>0. 0760</td><td>0.292</td><td>0.1598</td><td>0.4298</td></tr>
 </tbody></table>
