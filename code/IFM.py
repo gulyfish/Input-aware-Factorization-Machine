@@ -168,7 +168,7 @@ class FM(BaseEstimator, TransformerMixin):
             #         variable_parameters *= dim.value
             #     total_parameters += variable_parameters
             # if self.verbose > 0:
-            #     print("#params: %d" % total_parameters)
+            #     print("#params: %d" % total_parameters) 
 
     def _init_session(self):
         # adaptively growing video memory
