@@ -5,12 +5,12 @@ import tensorflow as tf
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_squared_error
 from time import time
+import argparse
 import LoadData as DATA
 from tensorflow.contrib.layers.python.layers import batch_norm as batch_norm
 import pickle as pk
 from sklearn.metrics import mean_absolute_error
 
-os.environ['CUDA_VISIBLE_DEVICES']='2'
 #################### Arguments ####################
 
 FLAGS = tf.app.flags.FLAGS
@@ -77,7 +77,7 @@ class FM(BaseEstimator, TransformerMixin):
             self.train_phase = tf.placeholder(tf.bool, name="train_phase_fm")
 
             # Variables.
-            self.weights = self._initialize_weights()
+            self.weights, self.weights2 = self._initialize_weights()
 
             # Model.
             # get the summed up embeddings of features.
@@ -87,18 +87,18 @@ class FM(BaseEstimator, TransformerMixin):
 
             # Factor Estimating Net
             dnn_nonzero_embeddings = tf.reshape(self.nonzero_embeddings,shape=[-1, self.valid_dimension * self.embedding_size])
-            self.dnn = tf.add(tf.matmul(dnn_nonzero_embeddings, self.weights['fenlayer_0']),self.weights['fenbias_0'])  # None * layer[i] * 1
+            self.dnn = tf.add(tf.matmul(dnn_nonzero_embeddings, self.weights2['fenlayer_0']),self.weights2['fenbias_0'])  # None * layer[i] * 1
             if self.batch_norm:
                 self.dnn = self.batch_norm_layer(self.dnn, train_phase=self.train_phase,scope_bn='bn_0')  # None * layer[i] * 1
             self.dnn = tf.nn.relu(self.dnn)
             self.dnn = tf.nn.dropout(self.dnn, self.dropout_keep[0])  # dropout at each Deep layer
             for i in range(1, len(self.fenlayers)):
-                self.dnn = tf.add(tf.matmul(self.dnn, self.weights['fenlayer_%d' % i]),self.weights['fenbias_%d' % i])  # None * layer[i] * 1
+                self.dnn = tf.add(tf.matmul(self.dnn, self.weights2['fenlayer_%d' % i]),self.weights2['fenbias_%d' % i])  # None * layer[i] * 1
                 if self.batch_norm:
                     self.dnn = self.batch_norm_layer(self.dnn, train_phase=self.train_phase,scope_bn='bn_%d' % i)  # None * layer[i] * 1
                 self.dnn = tf.nn.relu(self.dnn)
                 self.dnn = tf.nn.dropout(self.dnn, self.dropout_keep[i])  # dropout at each Deep layer
-            self.dnn_out = tf.matmul(self.dnn, self.weights['prediction_dnn'])  # None * 10
+            self.dnn_out = tf.matmul(self.dnn, self.weights2['prediction_dnn'])  # None * 10
             self.outm = tf.constant(float(self.valid_dimension)) * tf.nn.softmax(self.dnn_out)
             # self.dnn_out = tf.matmul(self.dnn_out, self.weights['prediction'])
 
@@ -124,6 +124,7 @@ class FM(BaseEstimator, TransformerMixin):
             # _________out _________
 
             self.Bilinear = tf.reduce_sum(self.IFM, 1, keep_dims=True)  # None * 1
+            self.Bilinear1 = tf.reduce_sum(self.IFM, 1, keep_dims=True)  # None * 1
             self.Feature_bias = tf.reduce_sum(
                 tf.multiply(tf.nn.embedding_lookup(self.weights['feature_bias'], self.train_features),
                             tf.expand_dims(self.outm, 2)), 1)  # None * 1
@@ -134,7 +135,7 @@ class FM(BaseEstimator, TransformerMixin):
             if self.lamda > 0:
                 keys = list(self.weights.keys())
                 self.loss = tf.nn.l2_loss(tf.subtract(self.train_labels, self.out)) + tf.add_n(
-                    [tf.contrib.layers.l2_regularizer(self.lamda)(self.weights[v]) for v in self.weights])
+                    [tf.contrib.layers.l2_regularizer(self.lamda)(self.weights2[v]) for v in self.weights2])
                 #           + tf.contrib.layers.l2_regularizer(self.lamda_bilinear)(self.weights['feature_memory'])# regulizer
                 # + tf.contrib.layers.l2_regularizer(self.lamda_bilinear)(self.weights['feature_embeddings']) self.l2_embed * tf.add_n([tf.nn.l2_loss(v) for v in embeds])
             else:
@@ -159,6 +160,16 @@ class FM(BaseEstimator, TransformerMixin):
             init = tf.global_variables_initializer()
             self.sess.run(init)
 
+            # number of params
+            total_parameters = 0
+            for variable in self.weights.values():
+                shape = variable.get_shape()  # shape is an array of tf.Dimension
+                variable_parameters = 1
+                for dim in shape:
+                    variable_parameters *= dim.value
+                total_parameters += variable_parameters
+            if self.verbose > 0:
+                print("#params: %d" % total_parameters)
 
     def _init_session(self):
         # adaptively growing video memory
@@ -167,6 +178,7 @@ class FM(BaseEstimator, TransformerMixin):
         return tf.Session(config=config)
 
     def _initialize_weights(self):
+        all_weights = dict()
         weights = dict()
         trainable = self.freeze_embedding
         if self.pretrain_flag > 0:
@@ -180,17 +192,17 @@ class FM(BaseEstimator, TransformerMixin):
                 weight_saver.restore(sess, self.save_file)
                 fe, fb, b = sess.run([feature_embeddings, feature_bias, bias])
 
-            weights['feature_embeddings'] = tf.Variable(fe, dtype=tf.float32, name='feature_embeddings',
+            all_weights['feature_embeddings'] = tf.Variable(fe, dtype=tf.float32, name='feature_embeddings',
                                                             trainable=trainable)
-            weights['feature_bias'] = tf.Variable(fb, dtype=tf.float32, name='feature_bias', trainable=trainable)
-            weights['bias'] = tf.Variable(b, dtype=tf.float32, name='bias', trainable=trainable)
+            all_weights['feature_bias'] = tf.Variable(fb, dtype=tf.float32, name='feature_bias', trainable=trainable)
+            all_weights['bias'] = tf.Variable(b, dtype=tf.float32, name='bias', trainable=trainable)
         else:
-            weights['feature_embeddings'] = tf.Variable(
+            all_weights['feature_embeddings'] = tf.Variable(
                 tf.random_normal([self.features_M, self.embedding_size], 0.0, 0.01),
                 name='feature_embeddings')  # features_M * K
-            weights['feature_bias'] = tf.Variable(
+            all_weights['feature_bias'] = tf.Variable(
                 tf.random_uniform([self.features_M, 1], 0.0, 0.0), name='feature_bias')  # features_M * 1
-            weights['bias'] = tf.Variable(tf.constant(0.0), name='bias')  # 1 * 1
+            all_weights['bias'] = tf.Variable(tf.constant(0.0), name='bias')  # 1 * 1
 
 
 
@@ -218,23 +230,19 @@ class FM(BaseEstimator, TransformerMixin):
             # prediction layer
             glorot = np.sqrt(2.0 / (self.fenlayers[-1] + 1))
 
-            weights['prediction_dnn'] = tf.Variable(np.random.normal(loc=0, scale=glorot, size=(self.fenlayers[-1], self.valid_dimension)),dtype=np.float32)  # layers[-1] * 1
+            weights['prediction_dnn'] = tf.Variable(
+                np.random.normal(loc=0, scale=glorot, size=(self.fenlayers[-1], self.valid_dimension)),
+                dtype=np.float32)  # layers[-1] * 1
+            all_weights['prediction'] = tf.Variable(
+                np.ones((self.fenlayers[-1], self.valid_dimension), dtype=np.float32))
 
-        return  weights
+        return all_weights, weights
 
     def batch_norm_layer(self, x, train_phase, scope_bn):
         bn_train = batch_norm(x, decay=0.9, center=True, scale=True, updates_collections=None,
                               is_training=True, reuse=None, trainable=True, scope=scope_bn)
         bn_inference = batch_norm(x, decay=0.9, center=True, scale=True, updates_collections=None,
                                   is_training=False, reuse=True, trainable=True, scope=scope_bn)
-        z = tf.cond(train_phase, lambda: bn_train, lambda: bn_inference)
-        return z
-
-    def layer_norm_layer(self, x, train_phase, scope_bn):
-        bn_train = tf.contrib.layers.layer_norm( x,center=True,scale=True,activation_fn=None,reuse=tf.AUTO_REUSE,
-        variables_collections=None,outputs_collections=None,trainable=True,begin_norm_axis=1,begin_params_axis=-1,scope=scope_bn)
-        bn_inference = tf.contrib.layers.layer_norm( x,center=True,scale=True,activation_fn=None,reuse=tf.AUTO_REUSE,
-        variables_collections=None,outputs_collections=None,trainable=False,begin_norm_axis=1,begin_params_axis=-1,scope=scope_bn)
         z = tf.cond(train_phase, lambda: bn_train, lambda: bn_inference)
         return z
 
@@ -456,4 +464,8 @@ def main(_):
         evaluate(FLAGS)
 
 if __name__ == '__main__':
+
+
     tf.app.run()
+
+
