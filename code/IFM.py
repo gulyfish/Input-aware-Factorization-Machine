@@ -16,7 +16,7 @@ os.environ['CUDA_VISIBLE_DEVICES']='2'
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('process', 'train','Process type: train, evaluate.')
-tf.app.flags.DEFINE_string('path', 'attentional_factorization_machine-master/data/','Input data path.')
+tf.app.flags.DEFINE_string('path', '../data/','Input data path.')
 tf.app.flags.DEFINE_string('dataset', 'frappe', 'Choose a dataset.')
 tf.app.flags.DEFINE_integer('epoch', 100, 'Number of epochs.')
 tf.app.flags.DEFINE_string("metric", "MAE", " MAE OR RMSE")
@@ -381,7 +381,7 @@ class FM(BaseEstimator, TransformerMixin):
 
 
 def make_save_file(FLAGS):
-    pretrain_path = 'attentional_factorization_machine-master/pretrain/fm_%s_%d' % (FLAGS.dataset, FLAGS.embedding_size)
+    pretrain_path = '../pretrain/fm_%s_%d' % (FLAGS.dataset, FLAGS.embedding_size)
 
     if not os.path.exists(pretrain_path):
         os.makedirs(pretrain_path)
