@@ -160,16 +160,6 @@ class FM(BaseEstimator, TransformerMixin):
             init = tf.global_variables_initializer()
             self.sess.run(init)
 
-            # number of params
-            # total_parameters = 0
-            # for variable in self.weights.values():
-            #     shape = variable.get_shape()  # shape is an array of tf.Dimension
-            #     variable_parameters = 1
-            #     for dim in shape:
-            #         variable_parameters *= dim.value
-            #     total_parameters += variable_parameters
-            # if self.verbose > 0:
-            #     print("#params: %d" % total_parameters) 
 
     def _init_session(self):
         # adaptively growing video memory
