@@ -5,7 +5,6 @@ import tensorflow as tf
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_squared_error
 from time import time
-import argparse
 import LoadData as DATA
 from tensorflow.contrib.layers.python.layers import batch_norm as batch_norm
 import pickle as pk
