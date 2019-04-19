@@ -11,6 +11,7 @@ from tensorflow.contrib.layers.python.layers import batch_norm as batch_norm
 import pickle as pk
 from sklearn.metrics import mean_absolute_error
 
+os.environ['CUDA_VISIBLE_DEVICES']='2'
 #################### Arguments ####################
 
 FLAGS = tf.app.flags.FLAGS
