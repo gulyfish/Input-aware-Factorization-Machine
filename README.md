@@ -13,6 +13,8 @@ The **MovieLens** dataset has been used for personalized tag
 recommendation, which contains 668,953 tag applications of
 17,045 users on 23,743 items with 49,657 distinct tags. 
 
+The **Avazu** dataset
+
 ## Additional experiments
 ### Experimental results for the classification task
 In the original paper, we evaluate various prediction models on two public datasets, which are regression tasks. 
