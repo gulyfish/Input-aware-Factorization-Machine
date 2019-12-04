@@ -1,0 +1,2 @@
+model_checkpoint_path: "frappe_256"
+all_model_checkpoint_paths: "frappe_256"
