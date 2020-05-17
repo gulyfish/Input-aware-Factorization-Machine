@@ -31,8 +31,7 @@ on **Avazu**
 | xDeepFM | 78.50 | 0.3771 |
 | **IFM** | **78.52** | **0.3770** |
 
-The **Avazu** raw dataset can be downloaded from https://www.kaggle.com/c/avazu-ctr-prediction/data.
-We follow the **Avazu** processing details of [PNN](https://github.com/Atomu2014/Ads-RecSys-Datasets).
+
 
 From Table 1 we can see that the proposed IFM model outperforms the other state-of-the-art methods on the classification task.
 The results confirm the effectiveness of IFM again and further justify the importance of input-aware feature representation.
